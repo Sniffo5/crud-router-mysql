@@ -1,28 +1,12 @@
 <?php
 
-require("routerClass.php");
+require("template.php");
 
-app::get("/", function(){
+$data = [
+    "name" => "Sven",
+    "age" => 32,
+    "grades" => [3, 5, 5]
+];
 
-    echo "Hello World!";
-
-});
-
-
-app::get("/quotes",function(){
-    app::out("quotes");
-});
-
-/* app::get('/cars/$id', function($id){
-
-    app::out("car with id $id");
-
-}); */
-
-app::get('/cars/$id', "views/car");
-
- app::delete('/cars/$id', function($id){
-    
-    app::out("Delete Car with id $id");
-
-}); 
+Render::view("welcome", $data);
+ 

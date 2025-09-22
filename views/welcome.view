@@ -1,0 +1,11 @@
+@extend layout @
+
+<h2>Hello {{$name}}</h2>
+
+{if($age>18): }
+<p>You can drink</p>
+{endif;}
+
+{foreach($grades as $g): }
+<p>{{$g}}</p>
+{endforeach;}
