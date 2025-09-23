@@ -1,3 +1,0 @@
-extract()
-
-file_get_contents()

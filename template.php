@@ -1,8 +1,10 @@
 <?php
 
-class Render{
-    
-    public static function view($view, $data){
+class Render
+{
+
+    public static function view($view, $data)
+    {
 
         extract($data);
 
@@ -19,7 +21,5 @@ class Render{
         file_put_contents("cache/$view.php", $viewFile);
 
         include("cache/$view.php");
-
     }
-
 }
