@@ -3,6 +3,7 @@
 require("template.php");
 require("routerClass.php");
 require("db.php");
+require("response.php");
 
 /* app::get("/", function(){
     Render::view("welcome", ["name" => "Sven","age" => 32,"grades" => [3, 5, 5]]);
@@ -12,10 +13,23 @@ app::get('/quotes/$title/$comment', function($title, $comment){
     Render::view("quote", ["title" => $title, "comment" => $comment]);
 }); */
 
-app::get("/cars", function(){
+app::get("/cars", function () {
+    Response::json(db::getCars());
+});
 
-    db::debug(db::getCars());
+app::get('/cars/$id', function ($id) {
 
+    $id = intval($id);
+    Response::json(db::getCar($id));
+});
 
+app::post("/cars", function () {
 
+    if (count($_POST) == 0) {
+        $data = (array) json_decode(file_get_contents("php://input")); // could also add true as a second paramater in json_decode to convert the object to an array
+
+        response::json(Db::insert_cars($data));
+    } else {
+        response::json(Db::insert_cars($_POST));
+    }
 });
