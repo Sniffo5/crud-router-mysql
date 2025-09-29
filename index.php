@@ -14,13 +14,19 @@ app::get('/quotes/$title/$comment', function($title, $comment){
 }); */
 
 app::get("/cars", function () {
+
+    if(isset($_GET['s'])){
+        Response::json(db::search_car($_GET['s']));
+        return;
+    }
+
     Response::json(db::getCars());
 });
 
 app::get('/cars/$id', function ($id) {
 
     $id = intval($id);
-    Response::json(db::getCar($id));
+    Response::json(db::get_car($id));
 });
 
 app::post("/cars", function () {
@@ -33,3 +39,17 @@ app::post("/cars", function () {
         response::json(Db::insert_cars($_POST));
     }
 });
+
+app::put('/cars/$id', function ($id){
+
+    Response::json(Db::update_car($id, json_decode(file_get_contents("php://input"), true))); 
+
+});
+
+app::delete('/cars/$id', function ($id) {
+
+    $id = intval($id);
+    Response::json(db::delete_car($id));
+});
+
+
