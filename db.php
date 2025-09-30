@@ -221,4 +221,66 @@ class Db
 
         return $data;
     }
+
+    /* AUTH Functions */
+
+    public static function get_user(string $email)
+    {
+
+        $query = "SELECT * FROM users WHERE email = ?";
+
+        $con = self::connect();
+
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("s", $email);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $data = $result->fetch_assoc();
+
+        $con->close();
+
+        return $data;
+    }
+
+    public static function register($user)
+    {
+        extract($user); // $email och $password hämtas ur $user
+
+        $dbUser = self::get_user($email);
+        if (isset($dbUser["email"])) return ["error" => "user exists"];
+
+        $password = password_hash($password, PASSWORD_DEFAULT, [
+            "cost" => 14
+        ]);
+
+        $con = self::connect();
+        $query = "INSERT INTO users (email, password) VALUES (?,?)";
+        $stmt = $con->prepare($query);
+
+        $stmt->bind_param("ss", $email, $password);
+        $stmt->execute();
+        $id = $stmt->insert_id;
+        $con->close();
+
+        return $id;
+    }
+
+    public static function login($user)
+    {
+        extract($user); // $email och $password hämtas ur $user
+
+        $dbUser = self::get_user($email);
+        if (empty($dbUser["email"])) return ["error" => "No user found"];
+
+        if (!password_verify($password, $dbUser["password"])) {
+            return ["error" => "Wrong Password"];
+        };
+
+        $_SESSION['auth'] = true;
+        $_SESSION['email'] = $email;
+
+        return ["message" => "$email is now logged in"];
+    }
 }
